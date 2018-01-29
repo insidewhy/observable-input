@@ -1,21 +1,23 @@
 import { ReplaySubject } from 'rxjs/ReplaySubject'
 
-const subjects = new Map();
+const subjects = new WeakMap();
 
 export function ObservableInput() {
-  return (target, propertyKey) => {
-    delete target[propertyKey];
+  return (target, prop) => {
+    delete target[prop];
 
-    Object.defineProperty(target, propertyKey, {
+    Object.defineProperty(target, prop, {
       set(value) {
-        this[propertyKey].next(value);
+        this[prop].next(value);
       },
 
       get() {
-        let subject = subjects.get(propertyKey);
-        if (!subject)  {
+        const subjectByProp: Map<string, ReplaySubject<any>> = subjects.get(this) || new Map();
+	let subject = subjectByProp.get(prop);
+        if (!subject) {
           subject = new ReplaySubject<any>(1);
-          subjects.set(propertyKey, subject);
+          subjectByProp.set(prop, subject);
+	  subjects.set(this, subjectByProp);
         }
         return subject;
       }
