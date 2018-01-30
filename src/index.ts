@@ -1,6 +1,8 @@
 import { ReplaySubject } from 'rxjs/ReplaySubject'
 
-const subjects = new WeakMap()
+type SubjectByProp = Map<string, ReplaySubject<any>>
+
+const subjects: WeakMap<Object, SubjectByProp> = new WeakMap()
 
 export function ObservableInput() {
   return (target, propertyKey) => {
@@ -11,10 +13,12 @@ export function ObservableInput() {
         this[propertyKey].next(value)
       },
       get() {
-        let subject = subjects.get(this)
+        const subjectByProp: SubjectByProp = subjects.get(this) || new Map()
+        let subject = subjectByProp.get(propertyKey)
         if (! subject)  {
           subject = new ReplaySubject<any>(1)
-          subjects.set(this, subject)
+          subjectByProp.set(propertyKey, subject)
+          subjects.set(this, subjectByProp)
         }
         return subject
       },
