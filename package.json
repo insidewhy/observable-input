@@ -40,9 +40,9 @@
     "mocha": "^3.5.2",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
-    "typescript": "^2.5.2"
+    "typescript": "^2.9.1"
   },
   "dependencies": {
-    "rxjs": "^5.4.3"
+    "rxjs": "^6.2.2"
   }
 }
