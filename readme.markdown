@@ -12,7 +12,7 @@ yarn add observable-input
 
 ```typescript
 import { Component, Input } from '@angular/core'
-import { Observable } from 'rxjs/Observable'
+import { Observable } from 'rxjs'
 import { ObservableInput } from 'observable-input'
 
 @Component({
