@@ -22,21 +22,12 @@ import { ObservableInput } from 'observable-input'
 class SomeComponent {
   @Input() @ObservableInput()
   private index: Observable<number>
-
-  @select()
-  private selectedIndex: Observable<number>
-
-  public isSelected = this.index.pipe(
-    switchMap(
-      index => this.selectedIndex.map(selectedIndex => selectedIndex === index)
-    )
-  )
 }
 ```
 
-Then in `some-component.html`:
+It can be used like this with a non-observable input for `index`:
 ```html
-<span [class.selected]="isSelected | async">maybe selected</span>
+<app-some-component index="nonObservableValue"></app-some-component>
 ```
 
 # Details
