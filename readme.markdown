@@ -26,8 +26,10 @@ class SomeComponent {
   @select()
   private selectedIndex: Observable<number>
 
-  public isSelected = this.index.switchMap(
-    index => this.selectedIndex.map(selectedIndex => selectedIndex === index)
+  public isSelected = this.index.pipe(
+    switchMap(
+      index => this.selectedIndex.map(selectedIndex => selectedIndex === index)
+    )
   )
 }
 ```
