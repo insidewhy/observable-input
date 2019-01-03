@@ -20,7 +20,7 @@ export function ObservableInput() {
           subjectByProp.set(propertyKey, subject)
           subjects.set(this, subjectByProp)
         }
-        return subject
+        return subject.asObservable()
       },
     })
   }
