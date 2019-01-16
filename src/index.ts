@@ -1,41 +1,30 @@
 import { Observable, ReplaySubject } from 'rxjs'
 
-type ObservableByProp = Map<string, Observable<any>>
-type SubjectByProp = Map<string, ReplaySubject<any>>
+interface Cache { observable: Observable<any>; subject: ReplaySubject<any> }
+type CacheByProp = Map<string, Cache>
 
-const observables: WeakMap<Object, ObservableByProp> = new WeakMap()
-const subjects: WeakMap<Object, SubjectByProp> = new WeakMap()
+const cache: WeakMap<Object, CacheByProp> = new WeakMap()
 
-const getMap = <T> (weakMap: WeakMap<Object, Map<string, T>>, instance: Object): Map<string, T> => {
-  const map: Map<string, T> = weakMap.get(instance)
-  if (map) {
-    return map
+const getCacheByProp = (instance: Object): CacheByProp => {
+  const cacheByProp: CacheByProp = cache.get(instance)
+  if (cacheByProp) {
+    return cacheByProp
   }
-  const newMap: Map<string, T> = new Map()
-  weakMap.set(instance, newMap)
-  return newMap
+  const newCacheByProp: CacheByProp = new Map()
+  cache.set(instance, newCacheByProp)
+  return newCacheByProp
 }
 
-const getSubject = (instance: Object, propertyKey: string): ReplaySubject<any> => {
-  const subjectByProp = getMap(subjects, instance)
-  const subject = subjectByProp.get(propertyKey)
-  if (subject) {
-    return subject
+const getCacheOfProp = (instance: Object, propertyKey: string): Cache => {
+  const cacheByProp = getCacheByProp(instance)
+  const cacheOfProp = cacheByProp.get(propertyKey)
+  if (cacheOfProp) {
+    return cacheOfProp
   }
-  const newSubject = new ReplaySubject<any>(1)
-  subjectByProp.set(propertyKey, newSubject)
-  return newSubject
-}
-
-const getObservable = (instance: Object, propertyKey: string): Observable<any> => {
-  const observableByProp = getMap(observables, instance)
-  const observable = observableByProp.get(propertyKey)
-  if (observable) {
-    return observable
-  }
-  const newObservable = getSubject(instance, propertyKey).asObservable()
-  observableByProp.set(propertyKey, newObservable)
-  return newObservable
+  const subject = new ReplaySubject<any>(1)
+  const newCacheOfProp: Cache = { observable: subject.asObservable(), subject }
+  cacheByProp.set(propertyKey, newCacheOfProp)
+  return newCacheOfProp
 }
 
 export function ObservableInput() {
@@ -44,10 +33,10 @@ export function ObservableInput() {
 
     Object.defineProperty(target, propertyKey, {
       set(value) {
-        getSubject(this, propertyKey).next(value)
+        getCacheOfProp(this, propertyKey).subject.next(value)
       },
       get() {
-        return getObservable(this, propertyKey)
+        return getCacheOfProp(this, propertyKey).observable
       },
     })
   }
