@@ -3,7 +3,7 @@ import { Observable, ReplaySubject } from 'rxjs'
 interface Cache { observable: Observable<any>; subject: ReplaySubject<any> }
 type CacheByProp = Map<string, Cache>
 
-const cache: WeakMap<Object, CacheByProp> = new WeakMap()
+const cache = new WeakMap<Object, CacheByProp>()
 
 const getCacheByProp = (instance: Object): CacheByProp => {
   const cacheByProp: CacheByProp = cache.get(instance)
@@ -22,7 +22,7 @@ const getCacheOfProp = (instance: Object, propertyKey: string): Cache => {
     return cacheOfProp
   }
   const subject = new ReplaySubject<any>(1)
-  const newCacheOfProp: Cache = { observable: subject.asObservable(), subject }
+  const newCacheOfProp = { observable: subject.asObservable(), subject }
   cacheByProp.set(propertyKey, newCacheOfProp)
   return newCacheOfProp
 }
