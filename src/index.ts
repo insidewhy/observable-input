@@ -1,7 +1,7 @@
 import { Observable, ReplaySubject } from 'rxjs'
 
-interface Cache { observable: Observable<any>; subject: ReplaySubject<any> }
-type CacheByProp = Map<string, Cache>
+interface SubjectAndObservable { observable: Observable<any>; subject: ReplaySubject<any> }
+type CacheByProp = Map<string, SubjectAndObservable>
 
 const cache = new WeakMap<Object, CacheByProp>()
 
@@ -15,7 +15,7 @@ const getCacheByProp = (instance: Object): CacheByProp => {
   return newCacheByProp
 }
 
-const getCacheOfProp = (instance: Object, propertyKey: string): Cache => {
+const getCacheOfProp = (instance: Object, propertyKey: string): SubjectAndObservable => {
   const cacheByProp = getCacheByProp(instance)
   const cacheOfProp = cacheByProp.get(propertyKey)
   if (cacheOfProp) {
