@@ -3,15 +3,15 @@ import { Observable, ReplaySubject } from 'rxjs'
 interface SubjectAndObservable { observable: Observable<any>; subject: ReplaySubject<any> }
 type ComponentSubjectsAndObservables = Map<string, SubjectAndObservable>
 
-const cache = new WeakMap<Object, ComponentSubjectsAndObservables>()
+const subjectsAndObservables = new WeakMap<Object, ComponentSubjectsAndObservables>()
 
 const getComponentSubjectsAndObservables = (instance: Object): ComponentSubjectsAndObservables => {
-  const componentSubjectsAndObservables: ComponentSubjectsAndObservables = cache.get(instance)
+  const componentSubjectsAndObservables: ComponentSubjectsAndObservables = subjectsAndObservables.get(instance)
   if (componentSubjectsAndObservables) {
     return componentSubjectsAndObservables
   }
   const newComponentSubjectsAndObservables: ComponentSubjectsAndObservables = new Map()
-  cache.set(instance, newComponentSubjectsAndObservables)
+  subjectsAndObservables.set(instance, newComponentSubjectsAndObservables)
   return newComponentSubjectsAndObservables
 }
 
