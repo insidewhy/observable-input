@@ -15,16 +15,16 @@ const getComponentSubjectsAndObservables = (instance: Object): ComponentSubjects
   return newComponentSubjectsAndObservables
 }
 
-const getCacheOfProp = (instance: Object, propertyKey: string): SubjectAndObservable => {
+const getSubjectAndObservable = (instance: Object, propertyKey: string): SubjectAndObservable => {
   const componentSubjectsAndObservables = getComponentSubjectsAndObservables(instance)
-  const cacheOfProp = componentSubjectsAndObservables.get(propertyKey)
-  if (cacheOfProp) {
-    return cacheOfProp
+  const subjectAndObservable = componentSubjectsAndObservables.get(propertyKey)
+  if (subjectAndObservable) {
+    return subjectAndObservable
   }
   const subject = new ReplaySubject<any>(1)
-  const newCacheOfProp = { observable: subject.asObservable(), subject }
-  componentSubjectsAndObservables.set(propertyKey, newCacheOfProp)
-  return newCacheOfProp
+  const newSubjectAndObservable = { observable: subject.asObservable(), subject }
+  componentSubjectsAndObservables.set(propertyKey, newSubjectAndObservable)
+  return newSubjectAndObservable
 }
 
 export function ObservableInput() {
@@ -33,10 +33,10 @@ export function ObservableInput() {
 
     Object.defineProperty(target, propertyKey, {
       set(value) {
-        getCacheOfProp(this, propertyKey).subject.next(value)
+        getSubjectAndObservable(this, propertyKey).subject.next(value)
       },
       get() {
-        return getCacheOfProp(this, propertyKey).observable
+        return getSubjectAndObservable(this, propertyKey).observable
       },
     })
   }
