@@ -1,6 +1,6 @@
 {
   "name": "observable-input",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "angular input properties as observable streams",
   "main": "lib/index.js",
   "directories": {
