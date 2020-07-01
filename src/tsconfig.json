@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "lib": ["es6"],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "outDir": "../lib",
     "sourceMap": true,
